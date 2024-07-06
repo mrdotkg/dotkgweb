@@ -7,23 +7,17 @@ interface Project {
 
 const projectsData: Project[] = [
   {
-    title: 'A Software Community',
-    description: ``,
-    imgSrc: '/static/images/google.png',
-    href: 'https://www.google.com',
+    title: 'ButterOps',
+    description: `A Software Community: Open and friendly community for first-timer and veteran developers.`,
+    imgSrc: '',
+    href: 'https://butterops.dotkg.in',
   },
   {
-    title: 'A Gaming Community',
-    description: ``,
-    imgSrc: '/static/images/time-machine.jpg',
-    href: '/blog/the-time-machine',
-  },
-  {
-    title: 'Indian Infrastructure Projects Monitoring',
-    description: ``,
-    imgSrc: '/static/images/time-machine.jpg',
-    href: '/blog/the-time-machine',
-  },
+    title: '40FY Gaming',
+    description: `A Gaming Community: Video Gaming Community for Mobile, iPad, PC and Play Station gamers.`,
+    imgSrc: '',
+    href: 'https://discord.gg/hSPKsyACfG',
+  }
 ]
 
 export default projectsData
