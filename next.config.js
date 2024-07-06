@@ -88,6 +88,10 @@ module.exports = () => {
       config.module.rules.push({
         test: /\.svg$/,
         use: ['@svgr/webpack'],
+      },
+      {
+        test: /\.css$/,
+        use:['style-loader', 'css-loader', 'sass-loader'],
       })
 
       return config
