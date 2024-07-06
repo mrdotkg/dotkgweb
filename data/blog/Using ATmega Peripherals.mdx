@@ -1,0 +1,109 @@
+---
+title: 'Using ATmega I/O devices'
+date: '2010-12-1'
+lastmod: '2012-01-05'
+tags: ['ATmega8', 'Embedded', 'Guide']
+draft: false
+summary: 'Simple examples of how to use different peripherals of the ATMEGA8 MCU on a solderless breadboard.'
+# images: ['/static/images/twitter-card.png']
+---
+
+## Serial Interface (USART)
+
+A microcontroller alone is already a cool thing. But it becomes even more useful, if it is coupled to a PC. For capacitance measurement I need an oscilloscope to see what is happening and to count the number of charge-reset cycles. It would be very convenient to send the number of cycles to the PC for logging or further analysis.  
+  
+The ATMEGA8 microcontroller has several ways of sending and receiving data. This post is about sending data to the pc using it's Universal Synchronous and Asynchronous serial Receiver and Transmitter (USART). This can be used to send data to the "serial port" of a PC. A detailed description of the USART functionality of the controller is in the [ATMEGA8 datasheet](http://www.atmel.com/Images/Atmel-2486-8-bit-AVR-microcontroller-ATmega8_L_datasheet.pdf). As always I recommend to read the section at some point. I'll give just enough information to get something running.  
+
+## Physical Connection
+
+One "problem" of nowadays PC is, that they frequently have no serial port connector. The second problem is: Even if they do, the serial port specifications work with 15V logic levels, we run our controller with 5V.  
+
+The second problem (15V logic levels) can be visualized by measuring the outgoing signal from the PC using an oscilloscope. The probe has to be connected to the pin 3 of the sub-d 9 connector. Pins 2 and 3 are the relevant ones for the signal reception and transmission, respecively. 
+  
+From the PC, it is very simple to send some data over the serial port. I can open a shell and type:  
+
+```bash 
+echo a > /dev/ttyUSB0
+```
+
+This sends the letter 'a' over the serial line. 
+  
+As a consequence of the high voltage, a converter (or "level adapter") is needed. There are special ICs for that purpose, for example the MAX232 (which I've never used). However, doing so, would result in a chain with 2 adapter devices:
+
+`PC -> USB-serial -> level-adapter -> ATMEGA8`
+  
+For the following experiments, I used instead [this device](http://shop.tuxgraphics.org/electronic/detail_ddcp-to-usb.html) from [www.tuxgraphics.org/](http://www.tuxgraphics.org/). It is adds USB connectivity to [this power supply](http://shop.tuxgraphics.org/electronic/detail_microcontroller_powersupply.html), but it can be used as a generic USB serial adapter / level converter / optical decoupling. It is very nice kit, because the data transfer is done optically (no electrical noise on the transfer lines and no ground loops). USB interface is done using the ft232rl chip from FTDI.  
+  
+The signal looks nice and clean with 5V amplitude.  
+  
+
+## The Protocol
+
+What is the computer sending? If not active, the output (visible on the scope in Fig. 4) of the PC is on high level (5V). If a transmission is starting, the PC output gets low (0V). That happens always, independent of the number that is to be send. Then follow 8 bits of data. Then one stop bit (high). The number 0x55 happens to be 01010101 in binary representation. The transmission starts with the least significant bit, which is a '1' which is transmitted as high level (5V).
+
+There is no clock line that indicates to the receiver, when to sample the data line for the bits. Consequently, the transmission can only be successful, if transmitter and receiver agree on the bit-rate. There is a large variety of options available for setting up serial port on a PC. But the default (just echo some data to /dev/ttyUSB0 device) seems to be a rate of 9600 BAUD. 1 BAUD is one bit per second. With the "transmission-initialize" bit at the beginning, we transmit 10 bits (1 start, 8 data, 1 stop bit). 10 bits at 9600 bits per second makes a byte-length of 10/(9600 bits/sec)=0.96ms per byte. That is exactly what can be seen on the scope. 
+
+## The Firmware
+
+Now I want to set-up the ATMEGA8 to receive that signal. Without any prior knowlege, one has to read the full section about the USART device in the controller manual. Here I provide the setup to comunicate with a PC with default settings:
+
+* First, the USART device has to be set up. This works (as always) by setting the correct bits in the correct registers of the controller.
+
+* The BAUD rate is determined by a 16-bit value in the UBRRH and UBRRL registers, where both of them contain one half of the 16-bit number. There is a formula in the ATMEGA8 datasheet to calculate the ubrr-value for a given clock frequency and a given BAUD rate.
+
+* I want 9600 at 8MHz, so the value is 51.
+
+* The next step is to enable the receiver and transmitter, which works by setting the corresponding bytes in the UCSRB register. 
+
+* Then I set the data format to 8 data bits and 1 stop bit, using the UCSRC register.  
+
+The receiver is always on and looks for data. If an outside transmission was received, this is indicated by the RXC-bit in the UCSRA register. If that bit is set to 1, the received value is accessible in the UDR register.
+
+Transmitting simply works by writing the message-byte into the UDR register. But before, one should check if the transmitter is not busy by looking at the UDRE-bit in the UCSRA register.
+
+All these things are done in the following program, which waits for a transmission. If it receives the character 'a', it sends back the message "hello, world!".
+
+It can be used by starting a program like "picocom" on the PC. this program captures key presses and sends the characters using the serial port specified as command line argument. It also displays any data that the PC serial receiver gets.
+
+Just type picocom `/dev/ttyUSB0` on the command line and press keys on the keyboard. After pressing 'a', "hello, world!" should come as an answer.
+
+Quit picocom by pressing `Ctrl-a Ctrl-x`.
+
+  
+```C
+#define F\_CPU 8000000
+#include <avr/io.h>
+#include <util/delay.h>
+
+int main(void)
+{
+  //init serial receiver
+  uint16\_t ubrr = 51;          // BAUD rate is 9600  at 8 MHz
+  UBRRH = (uint8\_t)(ubrr>>8);  // high byte of ubrr
+  UBRRL = (uint8\_t)ubrr;       // low byte of ubrr
+
+  // Enable receiver and transmitter 
+  UCSRB = (1<<RXEN)|(1<<TXEN);
+
+  // Set frame format: 8 data-bits, 1 stop-bit 
+  UCSRC = (1<<URSEL)|(3<<UCSZ0);
+
+  while(1)
+  {
+    while ( !(UCSRA & (1<<RXC)) ); // wait for serial transmission
+    uint8\_t ch = UDR;              // get the transmitted byte from UDR register
+  
+    if (ch == 'a')
+    {
+      char msg\[\] = "hello, world!";
+      char \*ptr = msg;
+      do
+      {
+        while ( !( UCSRA & (1<<UDRE)) ); // wait for output to be free
+        UDR = \*ptr++; // writing data into register initiates transmission
+      } while (\*ptr);
+    }
+  }
+  return 0 ;
+}
+```

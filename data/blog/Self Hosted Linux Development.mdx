@@ -1,0 +1,80 @@
+---
+title: 'Self Hosted Linux Development'
+date: '2012-06-05'
+lastmod: '2014-06-05'
+tags: ['Embedded', 'Web', 'Linux']
+draft: false
+summary: 'There are two common models for Embedded Linux development. These are cross-platform development and self-hosted development. We are going to explore self-hosted development using the Raspberry Pi as a target.'
+# images: ['/static/images/twitter-card.png']
+---
+
+# Self Hosted Linux Development
+
+Self-hosted development is an offshoot of developing on a host system. But there are several differences since the target system, like most embedded systems, has limited memory and a relatively slow processor.
+
+## Alternatives
+The Raspberry Pi is an inexpensive single-board computer with a 700MHz Broadcom ARM processor, 512Mb RAM, high definition video output supported by a GPU, USB connectors for keyboard and mouse, an SD memory card used for the file system, an Ethernet port, as well as significant expansion ability. 
+
+There are many other single-board computers on the market, some of which may be better suited to a particular application. The RPi (as it is sometimes called) was designed for educational use, so it fits well with the purposes of this column. If you need an board for a commercial application, I recommend that you look at other SBCs which are designed for the rigorous environment required by most embedded systems and are better tailored to your application's specific requirements. The RPi has a tremendous support base, with a dedicated website (www.raspberrypi.org), magazines, many online blogs and how-to guides, and even videos.
+
+## Install Raspberry Pi
+I followed the Quick Start Guide on www.raspberrypi.org and its recommendations to use the pre-installed NOOBS SD card and install the Raspbian distribution, based on the popular Debian distribution. First, I connected the RPi as shown in this photo.
+
+I followed the instructions on using the NOOBS SD card, which displays a number of available distributions when the RPi boots from the SD card. I selected Raspbian. This was mostly uneventful, but it takes a while. After Raspbian is installed, it needs to be configured. I made the mistake of specifying All Locales, rather than just the US Local, where I live, which took longer to configure than installing the distribution. Once Raspbian was done configuring, I was able to log in using the username “pi” and password “raspberry.” I discovered that the USB keyboard I was using was not being recognized correctly, and some keys were displaying wrong, such as showing the British pound symbol (£) rather than the character on the key cap. There may be some way to fix this using one of the Debian configuration tools, but my fix was to edit the default keyboard configuration:
+
+```bash
+sudo nano /etc/default/keyboard
+```
+
+Change XKBLAYOUT="gb" to specify the correct country code, in my case, us .
+
+To complete setting up the RPi, I needed to configure the Ethernet port. By default, Raspbian gets an IP address using DHCP. My DHCP server is configured to give the RPI the same IP address each time it submits a request. If you don't configure your DHCP server to assign the same address, it may assign a different address whenever the RPI starts, which can be confusing. Alternately, you can assign a static IP address to your RPI by following instructions found here: http://elinux.org/RPi_Setting_up_a_static_IP_in_Debian.
+
+
+## Development on the Raspberry Pi
+When you log in to the RPI, you'll discover that it is a pretty complete distribution. In keeping with its educational goals, you will find that most of the development tools have already been installed. It normally boots up into command line mode, but you can start a GUI by running “startx.”
+
+Let's build the simple driver from Part Seven. Raspbian comes with the Midori and NetSurf web browser. I used NetSurf to visit Embedded.com and navigate to where I could download the ZIP file containing the source code for myrandom.c. [http://beta.embedded.com/embedded/design/embedded/source-code/4429789/myrandom-Linux-example-driver]. I saved it in a subdirectory named myrandom and used “unzip myrandom.zip” to unpack it.
+
+Using vi or nano, create a new Makefile in the same directory like the one listed in Part Six, replacing `“lkm.o”` with `“myrandom.o”`. Then I typed in the command “make.” And the response was “Make: Nothing tobe done for 'all'.” You might need to install the kernel developmentfiles for your stock kernel. If these are not installed, make doesn't know what to do.
+
+We can use Debian's `apt-get` utility to install the kernel headers and build directory. But first, I wanted to make sure that I was running the latest version of Raspbian. So I first executed the command “sudo rpi-update”, waited for it to complete updated files, then I rebooted the Raspberry Pi.
+
+There are a number of web pages which discuss installing the Linux headers and the kernel sources. An easy way is to use the rpi-source script available on GitHub. To install, I followed a slightly modified set of the instructions on the rpi-source wiki [https://github.com/notro/rpi-source/wiki]:
+
+```bash
+$ wget https://raw.githubusercontent.com/notro/rpi-source/master/rpi-source$ sudo mv rpi-source /usr/bin/rpi-source$ sudo chmod +x /usr/bin/rpi-source $ rpi-source -q --tag-update
+```
+Before you run rpi-source, install the ncurses headers. The kernel build scripts require these headers. They can be installed using apt-get:
+
+```bash 
+$ sudo apt-get install libncurses5-dev
+$ rpi-source
+```
+
+As warned on the wiki, rpi-source generated a complaint that the installed version of GCC was different from the version needed to build the kernel. I followed the instructions and added the jessie source repository, and installed gcc-4.8:
+
+```bash 
+$ sudo cat “deb http://mirrordirector.raspbian.org/raspbian/ jessie main contrib non-free rpi” > /etc/apt/sources.list.d/jessie.list
+$ sudo apt-get update$ sudo apt-get install -y gcc-4.8 g++-4.8
+$ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.6 20
+$ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50
+$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.6 20
+$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50
+```
+
+After updating GCC, I re-ran rpi-source. This ran for a while and downloaded almost 120Mb of sources. Luckily, I have a fast Internet connection. Rpi-source then built the support programs needed to build kernel modules. When this was done, rpi-source had created a directory under `/home/pi`, created a link in `/home/pi/linux pointing` to it, and updated "/lib/modules/\`uname -r\`/build" to point to `/home/pi/linux`.
+
+When all this setup was complete, I was able to revisit Part Seven, and follow the instructions there:
+
+```bash 
+$ cd ~/myrandom
+$ make
+$ sudo insmod myrandom.ko
+$ sudo grep myrandom /var/log/messages
+```
+As before, I created the `/dev/myrandom` node with the correct major number (not the same as before) listed in `/var/log/messages`. I ran the same small test of the driver. And it worked!
+
+The Raspberry Pi, like similar Single Board Computers (SBCs) such as the BeagleBone and many others, act a lot like an underpowered laptop computer, with a separate keyboard and monitor. It's certainly possible to do application or development of Linux Kernel Modules on an SBC. The advantage is that it is native development, like working on your desktop system. The disadvantage is that the resources available on an SBC are often limited, which can result in long build times or running out of space on the flash card.
+
+Next time, we'll talk about a hybrid approach, where we build the Linux kernel for the Raspberry Pi on a fast host system, using cross-development tools.
