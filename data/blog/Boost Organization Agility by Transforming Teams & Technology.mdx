@@ -1,0 +1,112 @@
+---
+title: 'Boost Organization Agility by Transforming Teams & Technology'
+date: '2019-08-05'
+lastmod: '2020-06-05'
+tags: ['eCommerce', 'Migration', 'Cloud']
+draft: false
+summary: 'Let me share with you my experiences as a Devops Team Lead around this change.'
+# images: ['/static/images/modern-org.avif']
+---
+
+Welcome, fellow developers!
+====
+
+I have worked as Lead Devops Engineer for Piping Rock Inc. We are into manufacturing and selling health products and have been most trusted (#1) in the US. I was fortunate to be part of the changes brought to the company Dev and Operational workflow between late 2015 to early 2020.
+
+Let me share with you my experiences as a Devops Team Lead around this change.
+
+<hr>
+
+By early 2011, we had already begun to expand our warehouses and shelf presence in the malls. With the consumers trust and associates efforts, we experienced an unprecedented growth in our business in 5 years. By 2015, we opened 4 offices across 3 continents. In which total 3-4 independent tech teams were collaborating with IT, Management, Operations teams. This was the time when I joined the company into its eCommerce team, India.
+
+Around 2016, the eCommerce team was accountable for running business through website(~25% of total sales). This team was responsible for Online Marketing, Website Sales, Customer Support, Website Administration along with Reporting & Analytics affairs.
+
+
+![eCommerce Net Sales](/static/images/net-sales.avif)
+
+yearly net sales for the company, [view source](https://ecommercedb.com/store/pipingrock.com)
+
+
+## Impact of rapid business growth on eCommerce team/projects
+
+Our executive teams have been working hard for over past years towards expansion of company operations and business (more than X5), and the results brought over to us some new responsibilities and directions to explore. Some of them were
+
+**Server uptime** - Website was placing >1.2 orders per second on an average and each enforced downtime had to be calculated and precise.
+
+**New Innovation** - We were creating new projects and integrating new SaaS services at any time to overcome our immediate challenges apart from BAU.
+
+**Infrastructure upgrades** - Every few months we were requesting to our cloud provider to deliver us new servers, storage or duplicate DB servers either urgently or as a precautionary measure.
+
+**Cost Management**- Our budget was skyrocketing with services like Akamai, Cloud provider Rackspace and additional support services.
+
+**Team Workflow** - The company never stopped hiring to meet the growth rate. New responsibilities organically converted to new teams and hence our decisions had to be aligned to them as well.
+
+**Tech Mergers** - We were buying more warehouses and merging our businesses with small players in the supply chain. We had to plan and make sure that the new traffic is routed correctly to us and new customer trust deficit is avoided.
+
+**Tech Mergers** - We were buying more warehouses and merging our businesses with small players in the supply chain. We had to plan and make sure that the new traffic is routed correctly to us and new customer trust deficit is avoided.
+**Tech Mergers** - We were buying more warehouses and merging our businesses with small players in the supply chain. We had to plan and make sure that the new traffic is routed correctly to us and new customer trust deficit is avoided.
+
+![eCommerce Net Sales](/static/images/6hsQ-Dv5n.avif)
+
+consistent growth in business, [view source](https://ecommercedb.com/store/pipingrock.com)
+
+However, under the hood we were still a bunch of full stack developers, working on our monolithic project and pushing sprints to our on-premise. We, the dev team, were also supporting all vendor integration and trying to be in sync with other company verticals like Warehouse, Logistics and IT/Management.
+
+This was indeed not the best!
+
+## Steps to upgrade the dev infrastructure
+
+To overcome these challenges and be future ready for more such growth and expansion we started our migration project somewhere in mid 2016 with these clear goals
+
+- Development using agile tools, container based and cloud native SDLC.
+- Product standardization with the help of cloud technology.
+- Satisfying Work Culture for the teams, 100% satisfying experience.
+
+Our Senior Web Architect took charge of the migration and brought all the teams to participate in the migration together, time to time. Under him, we started a new Devops team with a couple of developers and made sure that this team has enough training, clarity and resources to drive infrastructure automation. Together, our efforts took a span of over 2 years to transition our eCommerce dev team.
+
+We started working, keeping in mind, only to migrate our eCommerce website. But with our team's clarity of vision and simple but modular approach, we were able to implement the practices to other projects as well.
+
+> Complex tasks do not have to be complicated.
+
+Here are a few outline of the consolidated work we delivered around this time-
+
+- Training and support for developers onboarding to dev team.
+- Organization wide SSO for centralized privilege control
+- Unified dev environment to develop, build and run all company projects.
+- Ticketing and branch workflow to support project development.
+- CI (+webhooks) for the dev team to self-manage stage and test pipelines.
+- Continuous deployment pipelines to support small and frequent releases.
+- Self managed Jenkins server for QA test automations.
+- Available, reliable and scalable servers through immutable containers.
+- Self-managed highly scalable, backed-up and available DB instances.
+- 100% IaC for all cloud services and workflow for consistency and speed.
+- Centralized monitoring of network, security, cost, storage and health.
+- Network shared storage for Image hosting and file uploads, CDNs.
+- Refactor monolith project into multiple APIs, Apps and Supporting projects.
+- Restructure teams to reflect developer's accountability to apps/apis.
+
+We had worked for months on our D-Day migrations checklists. We also had every team onboard with us. But despite all this, we failed in our first 2 attempts of migrations. Until, after learning from them, we did migrate successfully in our very next attempt.
+
+
+## Conclusion
+By the time we went live we prepared all the infrastructure diagrams, workflow documents and arranged cloud training for the developers. With our dev team's excitement and support, eCommerce team and projects adapted to this workflow transition in just a few weeks.
+
+Some of the immediate direct benefits company got with this migrations were
+
+- Flawless site traffic and user trust is persisted through three tech mergers
+- Access controlled collaboration with outsourced cloud partner teams.
+- We got more bandwidth and productivity with same no of developers.
+- Introduction of Product ownership
+- Avoid the developers having to jump technology.
+
+Our cloud migration (the release) took over a few weeks and it left us with many sprints of development work as not released. To compensate that, for the first few months, we were running many parallel staging servers to support testing and deployments. With our Devops practices and IaC in place, we owned our infrastructure.
+
+Wait, how could we completely ignore Serverless Architecture and Edge Computing/Data implementations?
+
+Dammit, Devops!
+
+
+<hr>
+
+I left the company around Christmas, 2019 and created an open source community based on similar modern development principles. Feel free to visit and see most of these practical implementations supporting our community projects development.
+If you are from Piping Rock, (Hello 👋!!) do leave a comment about what do you feel about the dev experience. I appreciate if you would like to share some more insights or may be correct some details in the discussed topic.
