@@ -9,7 +9,7 @@ const siteMetadata = {
   siteUrl: 'https://dotkg.in',
   siteRepo: 'https://github.com/mrdotkg/dotkg.in',
   siteLogo: '/static/images/dp.jpg',
-  socialBanner: '/static/images/twitter-card.png',
+  socialBanner: '/static/images/dp.jpg',
   // mastodon: 'https://mastodon.social/@mastodonuser',
   //email: 'address@yoursite.com',
   github: 'https://github.com/mrdotkg',
