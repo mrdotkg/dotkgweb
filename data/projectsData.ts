@@ -16,7 +16,7 @@ const projectsData: Project[] = [
     title: '40FY Gaming',
     description: `A Gaming Community: Video Gaming Community for Mobile, iPad, PC and Play Station gamers.`,
     imgSrc: '',
-    href: 'https://discord.gg/hSPKsyACfG',
+    href: 'https://40fy.dotkg.in',
   }
 ]
 
