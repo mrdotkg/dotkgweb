@@ -3,7 +3,7 @@ const siteMetadata = {
   title: 'Personal Blog/Portfolio',
   author: 'Kr. Gaurav',
   headerTitle: 'KG Blogs',
-  description: 'I publish my work here.',
+  description: 'I post my latest projects and boast about them here. If you are an old subscriber, I am still migrating my old blogs from dev.to, Hashnode and Medium. Sorry for the inconvinience. ',
   language: 'en-us',
   theme: 'system', // system, dark or light
   siteUrl: 'https://dotkg.in',
