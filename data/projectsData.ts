@@ -10,13 +10,13 @@ const projectsData: Project[] = [
     title: 'ButterOps',
     description: `A Software Community: Open and friendly community for first-timer and veteran developers.`,
     imgSrc: '',
-    href: 'https://butterops.dotkg.in',
+    href: 'https://butterops.kgrv.online/',
   },
   {
     title: '40FY Gaming',
     description: `A Gaming Community: Video Gaming Community for Mobile, iPad, PC and Play Station gamers.`,
     imgSrc: '',
-    href: 'https://40fy.dotkg.in',
+    href: 'https://40fy.kgrv.online/',
   }
 ]
 
