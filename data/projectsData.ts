@@ -22,7 +22,7 @@ const projectsData: Project[] = [
   },
   {
     title: 'Sant Dariya Sahab Granth',
-    description: `Only digital collecction of 13 Granths written by Sant Dariya Sahab for Social welfair.`,
+    description: `Only digital collection of 13 Granths written by Sant Dariya Sahab for Social welfair.`,
     imgSrc: '',
     href: `https://santdariya.${baseURL}`,
   }
