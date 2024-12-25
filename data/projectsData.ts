@@ -19,6 +19,12 @@ const projectsData: Project[] = [
     description: `A Gaming Community: Video Gaming Community for Mobile, iPad, PC and Play Station gamers.`,
     imgSrc: '',
     href: `https://40fy.${baseURL}`,
+  },
+  {
+    title: 'Sant Dariya Sahab Granth',
+    description: `Only digital collecction of 13 Granths written by Sant Dariya Sahab for Social welfair.`,
+    imgSrc: '',
+    href: `https://santdariya.${baseURL}`,
   }
 ]
 
