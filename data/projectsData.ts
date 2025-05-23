@@ -12,7 +12,7 @@ const projectsData: Project[] = [
     title: 'ButterOps',
     description: `A Software Community: Open and friendly community for first-timer and veteran developers.`,
     imgSrc: '',
-    href: `https://butterops.${baseURL}`,
+    href: `https://butterops.dev`,
   },
   {
     title: '40FY Gaming',
